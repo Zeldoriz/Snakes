@@ -1,0 +1,14 @@
+#boardContainer {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#board {
+  margin: 1em;
+  display: grid;
+  grid-template-columns: repeat(20, 1fr);
+  grid-gap: 0.5em;
+}
