@@ -61,6 +61,22 @@ const Board = () => {
   const foodTile = useRef(defaultValue().foodTile);
   const [foodExists, setFoodExists] = useState(defaultValue().foodExists);
 
+  //Reverts all the game settings into its default values
+  const restartGame = () => {
+    setTiles(boardInit);
+    gameSpeed.current = 100;
+    setGameStatus("running");
+    setActiveHeadTile({ x: 0, y: 0 });
+    setSnakeLength(1);
+    currentDirection.current = "right";
+    currentHeadTile.current = null;
+    snakeTiles.current = [];
+    snakeTail.current = [];
+    foodTile.current = { x: -1, y: -1 };
+    setFoodExists(false);
+    setGameScore(0);
+  };
+
   // Directional movement functions
   const move = () => {
     const right = () => {
@@ -261,7 +277,7 @@ const Board = () => {
   //Debugging function to log the current state of the board
   const handleClick = () => {
     console.log(gameStatus);
-    setGameStatus("running");
+    restartGame();
     console.log(gameStatus);
   };
 
