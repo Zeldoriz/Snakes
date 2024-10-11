@@ -1,10 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useContext } from "react";
 import Tile from "../Tile/Tile";
 import styles from "./Board.module.css";
+import GameContext from "../../contexts/GameContext";
 
 const Board = () => {
+  // useContext to access GameContext which stores global game values
+  const gameContext = useContext(GameContext);
+
   //Board size settings
   const boardSizeY = useRef(20),
     boardSizeX = useRef(20);
@@ -18,11 +22,12 @@ const Board = () => {
   }
 
   //Board settings
-  const [activeHeadTile, setActiveHeadTile] = useState({ x: 0, y: 0 });
   const [tiles, setTiles] = useState(boardInit);
   const gameSpeed = useRef(100);
+  const [gameStatus, setGameStatus] = useState("starting");
 
   //Snake settings
+  const [activeHeadTile, setActiveHeadTile] = useState({ x: 0, y: 0 });
   const [snakeLength, setSnakeLength] = useState(1);
   const currentDirection = useRef("right");
   const currentHeadTile = useRef();
@@ -34,28 +39,51 @@ const Board = () => {
   const [foodExists, setFoodExists] = useState(false);
 
   // Directional movement functions
-  const moveActiveRight = () => {
-    setActiveHeadTile({ x: (activeHeadTile.x + 1) % boardSizeX.current, y: activeHeadTile.y });
+  const move = () => {
+    const right = () => {
+      setActiveHeadTile({ x: (activeHeadTile.x + 1) % boardSizeX.current, y: activeHeadTile.y });
+    };
+
+    const left = () => {
+      setActiveHeadTile(() => {
+        if (activeHeadTile.x <= 0) return { x: boardSizeX.current - 1, y: activeHeadTile.y };
+        return { x: (activeHeadTile.x - 1) % boardSizeX.current, y: activeHeadTile.y };
+      });
+    };
+
+    const down = () => {
+      setActiveHeadTile(() => {
+        setActiveHeadTile({ x: activeHeadTile.x, y: (activeHeadTile.y + 1) % boardSizeY.current });
+      });
+    };
+
+    const up = () => {
+      setActiveHeadTile(() => {
+        if (activeHeadTile.y <= 0) return { x: activeHeadTile.x, y: boardSizeY.current - 1 };
+        return { x: activeHeadTile.x, y: (activeHeadTile.y - 1) % boardSizeY.current };
+      });
+    };
+    return { right, left, down, up };
   };
 
-  const moveActiveLeft = () => {
-    setActiveHeadTile(() => {
-      if (activeHeadTile.x <= 0) return { x: boardSizeX.current - 1, y: activeHeadTile.y };
-      return { x: (activeHeadTile.x - 1) % boardSizeX.current, y: activeHeadTile.y };
-    });
-  };
-
-  const moveActiveDown = () => {
-    setActiveHeadTile(() => {
-      setActiveHeadTile({ x: activeHeadTile.x, y: (activeHeadTile.y + 1) % boardSizeY.current });
-    });
-  };
-
-  const moveActiveUp = () => {
-    setActiveHeadTile(() => {
-      if (activeHeadTile.y <= 0) return { x: activeHeadTile.x, y: boardSizeY.current - 1 };
-      return { x: activeHeadTile.x, y: (activeHeadTile.y - 1) % boardSizeY.current };
-    });
+  //Snake movement function based on current direction
+  const moveSnake = () => {
+    switch (currentDirection.current) {
+      case "right":
+        move().right();
+        break;
+      case "left":
+        move().left();
+        break;
+      case "down":
+        move().down();
+        break;
+      case "up":
+        move().up();
+        break;
+      default:
+        break;
+    }
   };
 
   //Delete tail when snake is moving "Right" or "Down"
@@ -123,6 +151,7 @@ const Board = () => {
     if (currentHeadTile.current.x === foodTile.current.x && currentHeadTile.current.y === foodTile.current.y) {
       setSnakeLength(snakeLength + 1);
       setFoodExists(false);
+      
     }
   };
 
@@ -135,61 +164,49 @@ const Board = () => {
 
   //Board update function
   useEffect(() => {
-    const interval = setInterval(() => {
-      let newTiles = tiles.map((tile) => {
-        const { x, y } = getTileKey(tile);
-        if (x === activeHeadTile.x && y === activeHeadTile.y) {
-          currentHeadTile.current = { x, y };
-          //Log snake traversal tiles throughout the board
-          snakeTiles.current.push({ x, y });
-          if (snakeTiles.current.length > snakeLength) snakeTiles.current.shift();
+    if (gameStatus === "running") {
+      const interval = setInterval(() => {
+        let newTiles = tiles.map((tile) => {
+          const { x, y } = getTileKey(tile);
+          if (x === activeHeadTile.x && y === activeHeadTile.y) {
+            currentHeadTile.current = { x, y };
+            //Log all the tiles occupied by the snake throughout the board
+            snakeTiles.current.push({ x, y });
+            if (snakeTiles.current.length > snakeLength) snakeTiles.current.shift();
 
-          return <Tile key={`${x}-${y}`} x={x} y={y} isActive={true} isFood={false} />;
-        } else if (snakeTiles.current.some((tile) => tile.x === x && tile.y === y)) {
-          return <Tile key={`${x}-${y}`} x={x} y={y} isActive={true} isFood={false} />;
-        } else {
-          return tile;
+            return <Tile key={`${x}-${y}`} x={x} y={y} isActive={true} isFood={false} />;
+          } else if (snakeTiles.current.some((tile) => tile.x === x && tile.y === y)) {
+            return <Tile key={`${x}-${y}`} x={x} y={y} isActive={true} isFood={false} />;
+          } else {
+            return tile;
+          }
+        });
+
+        //Store the current and previous snake "tails" to debug extra tails when moving "Right" or "Down"
+        snakeTail.current.push(snakeTiles.current[0]);
+        if (snakeTail.current.length > 2) snakeTail.current.shift();
+
+        //Check if food exists on the board, if not, generate a new food tile
+        if (!foodExists) newTiles = generateFoodTile(newTiles); //Calls function to get the new food tile
+
+        //Updates the board with the new tiles
+        updateTiles(newTiles);
+
+        //Check if the snake has eaten the food
+        checkIfEatenFood();
+
+        //Check if the snake has collided with itself
+        if (isOverlapping(currentHeadTile.current.x, currentHeadTile.current.y, "snake")) {
+          alert("Gameover");
+          setGameStatus("gameover");
         }
-      });
 
-      //Store the current and previous snake "tails" to debug extra tails when moving "Right" or "Down"
-      snakeTail.current.push(snakeTiles.current[0]);
-      if (snakeTail.current.length > 2) snakeTail.current.shift();
-
-      //Check if food exists on the board, if not, generate a new food tile
-      if (!foodExists) newTiles = generateFoodTile(newTiles); //Calls function to get the new food tile
-
-      //Updates the board with the new tiles
-      updateTiles(newTiles);
-
-      //Check if the snake has eaten the food
-      checkIfEatenFood();
-
-      //Check if the snake has collided with itself
-      if (isOverlapping(currentHeadTile.current.x, currentHeadTile.current.y, "snake")) alert("Game Over");
-
-      //Move the snake in the current direction
-      switch (currentDirection.current) {
-        case "right":
-          moveActiveRight();
-          break;
-        case "left":
-          moveActiveLeft();
-          break;
-        case "down":
-          moveActiveDown();
-          break;
-        case "up":
-          moveActiveUp();
-          break;
-        default:
-          break;
-      }
-    }, gameSpeed.current);
-    return () => {
-      clearInterval(interval);
-    };
-  }, [activeHeadTile, tiles]);
+        //Move the snake in the current direction
+        moveSnake();
+      }, gameSpeed.current);
+      return () => clearInterval(interval);
+    }
+  }, [activeHeadTile, tiles, gameStatus]);
 
   //Event listener for arrow keys, runs on component mount only, changes current direction based on keydown event
   useEffect(() => {
@@ -220,14 +237,16 @@ const Board = () => {
 
   //Debugging function to log the current state of the board
   const handleClick = () => {
-    console.log(snakeTiles.current);
+    console.log(gameStatus);
+    setGameStatus("running");
+    console.log(gameStatus);
   };
 
   return (
     <>
       <div id={styles.boardContainer}>
         <div id={styles.board} onClick={handleClick}>
-          {tiles}
+          {gameStatus === "gameover" ? <h1>Game Over</h1> /*Replace h1 element with a gameover prompt*/ : tiles}
         </div>
       </div>
     </>
