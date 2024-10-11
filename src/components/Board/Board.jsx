@@ -4,6 +4,7 @@ import { useEffect, useState, useRef, useContext, useMemo } from "react";
 import Tile from "../Tile/Tile";
 import styles from "./Board.module.css";
 import GameContext from "../../contexts/GameContext";
+import PauseOverlay from "../PauseOverlay/PauseOverlay";
 
 const Board = () => {
   // useContext to access GameContext which stores global game values
@@ -278,18 +279,24 @@ const Board = () => {
   }, []);
 
   //Debugging function to log the current state of the board
-  const handleClick = () => {
+  const handlePause = () => {
     console.log(gameStatus);
-    restartGame();
+    // restartGame();
+    setGameStatus("paused");
     console.log(gameStatus);
   };
 
   return (
     <>
+      <PauseOverlay setGameStatus={setGameStatus} gameStatus={gameStatus} />
       <div className={styles.gameScore}>Score: {gameScore}</div>
       <div id={styles.boardContainer}>
-        <div id={styles.board} onClick={handleClick}>
-          {gameStatus === "gameover" ? <h1>Game Over</h1> /*Replace h1 element with a gameover prompt*/ : tiles}
+        <div id={styles.board}>
+          {gameStatus === "starting" ? null : (
+            <div className={styles.tiles} onClick={handlePause}>
+              {tiles}{" "}
+            </div>
+          )}
         </div>
       </div>
     </>

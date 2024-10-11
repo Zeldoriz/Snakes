@@ -1,4 +1,4 @@
-import "./App.css";
+import styles from "./App.module.css";
 import Board from "./components/Board/Board";
 import GameContext from "./contexts/GameContext";
 import { useState } from "react";
@@ -8,9 +8,11 @@ function App() {
 
   return (
     <>
-      <GameContext.Provider value={{ gameScore: gameScore, setGameScore: setGameScore }}>
-        <Board />
-      </GameContext.Provider>
+      <div className={styles.appContainer}>
+        <GameContext.Provider value={{ gameScore: gameScore, setGameScore: setGameScore }}>
+          <Board />
+        </GameContext.Provider>
+      </div>
     </>
   );
 }

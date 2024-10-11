@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import styles from "./Tile.module.css";
-const Tile = ({ x, y, isActive, isFood }) => {
+const Tile = ({ isActive, isFood }) => {
   return (
     <>
       {isActive ? (

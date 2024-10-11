@@ -6,7 +6,7 @@
   align-items: center;
 }
 
-#board {
+.tiles {
   margin: 1em;
   display: grid;
   grid-template-columns: repeat(20, 1fr);

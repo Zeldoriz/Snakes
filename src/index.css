@@ -126,5 +126,5 @@ table {
 /* Custom CSS */
 
 :root {
-  background-color: rgb(13, 17, 23);
+  --background-color: rgb(13, 17, 23);
 }
