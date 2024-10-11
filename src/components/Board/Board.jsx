@@ -90,7 +90,7 @@ const Board = () => {
     return false;
   };
 
-  //Generates a random x and y coordinate for the food tile
+  //Generates a random x and y coordinate for the food tile, checks if it overlaps with the snake with isOverlapping()
   const getRandomFoodTile = () => {
     let found = false;
     while (!found) {
@@ -108,8 +108,7 @@ const Board = () => {
     getRandomFoodTile();
     const food = foodTile.current;
     const newTiles = tiles.map((tile) => {
-      const x = parseInt(tile.key.split("-")[0]),
-        y = parseInt(tile.key.split("-")[1]);
+      const { x, y } = getTileKey(tile);
 
       if (x === food.x && y === food.y) return <Tile key={`${x}-${y}`} x={x} y={y} isActive={false} isFood={true} />;
       else return tile;
@@ -127,13 +126,18 @@ const Board = () => {
     }
   };
 
+  //Get the x and y coordinates of a tile from a tiles map
+  const getTileKey = (tile) => {
+    let tileX = parseInt(tile.key.split("-")[0]),
+      tileY = parseInt(tile.key.split("-")[1]);
+    return { x: tileX, y: tileY };
+  };
+
   //Board update function
   useEffect(() => {
     const interval = setInterval(() => {
       let newTiles = tiles.map((tile) => {
-        const x = parseInt(tile.key.split("-")[0]),
-          y = parseInt(tile.key.split("-")[1]);
-
+        const { x, y } = getTileKey(tile);
         if (x === activeHeadTile.x && y === activeHeadTile.y) {
           currentHeadTile.current = { x, y };
           //Log snake traversal tiles throughout the board
