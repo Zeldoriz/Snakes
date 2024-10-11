@@ -2,7 +2,6 @@
   "name": "snake",
   "private": true,
   "version": "0.0.0",
-  "homepage": "https://gitname.github.io/react-gh-pages",
   "type": "module",
   "scripts": {
     "dev": "vite",
