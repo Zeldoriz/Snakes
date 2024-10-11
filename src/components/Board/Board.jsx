@@ -8,6 +8,7 @@ import GameContext from "../../contexts/GameContext";
 const Board = () => {
   // useContext to access GameContext which stores global game values
   const gameContext = useContext(GameContext);
+  const { gameScore, setGameScore } = gameContext;
 
   //Board size settings
   const boardSizeY = useRef(20),
@@ -21,18 +22,40 @@ const Board = () => {
     }
   }
 
+  //Default values for all variables
+  const defaultValue = () => {
+    return {
+      //Default board settings
+      tiles: boardInit,
+      gameSpeed: 100,
+      gameStatus: "starting",
+
+      //Default snake settings
+      activeHeadTile: { x: 0, y: 0 },
+      snakeLength: 1,
+      currentDirection: "right",
+      currentHeadTile: null,
+      snakeTiles: [],
+      snakeTail: [],
+
+      //Default food settings
+      foodTile: { x: -1, y: -1 },
+      foodExists: false
+    };
+  };
+
   //Board settings
-  const [tiles, setTiles] = useState(boardInit);
-  const gameSpeed = useRef(100);
-  const [gameStatus, setGameStatus] = useState("starting");
+  const [tiles, setTiles] = useState(defaultValue().tiles);
+  const gameSpeed = useRef(defaultValue().gameSpeed);
+  const [gameStatus, setGameStatus] = useState(defaultValue().gameStatus);
 
   //Snake settings
-  const [activeHeadTile, setActiveHeadTile] = useState({ x: 0, y: 0 });
-  const [snakeLength, setSnakeLength] = useState(1);
-  const currentDirection = useRef("right");
-  const currentHeadTile = useRef();
-  const snakeTiles = useRef([]);
-  const snakeTail = useRef([]);
+  const [activeHeadTile, setActiveHeadTile] = useState(defaultValue().activeHeadTile);
+  const [snakeLength, setSnakeLength] = useState(defaultValue().snakeLength);
+  const currentDirection = useRef(defaultValue().currentDirection);
+  const currentHeadTile = useRef(defaultValue().currentHeadTile);
+  const snakeTiles = useRef(defaultValue());
+  const snakeTail = useRef(defaultValue());
 
   //Food settings
   const foodTile = useRef({ x: -1, y: -1 });
@@ -151,7 +174,7 @@ const Board = () => {
     if (currentHeadTile.current.x === foodTile.current.x && currentHeadTile.current.y === foodTile.current.y) {
       setSnakeLength(snakeLength + 1);
       setFoodExists(false);
-      
+      setGameScore(gameScore + 1);
     }
   };
 
@@ -244,6 +267,7 @@ const Board = () => {
 
   return (
     <>
+      <div className={styles.gameScore}>Score: {gameScore}</div>
       <div id={styles.boardContainer}>
         <div id={styles.board} onClick={handleClick}>
           {gameStatus === "gameover" ? <h1>Game Over</h1> /*Replace h1 element with a gameover prompt*/ : tiles}

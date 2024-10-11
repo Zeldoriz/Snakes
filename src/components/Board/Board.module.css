@@ -12,3 +12,10 @@
   grid-template-columns: repeat(20, 1fr);
   grid-gap: 0.5em;
 }
+
+.gameScore {
+  color: white;
+  font-size: 3em;
+  margin: 1em;
+  position: fixed;
+}
