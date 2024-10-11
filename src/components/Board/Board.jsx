@@ -294,7 +294,7 @@ const Board = () => {
         <div id={styles.board}>
           {gameStatus === "starting" ? null : (
             <div className={styles.tiles} onClick={handlePause}>
-              {tiles}{" "}
+              {tiles}
             </div>
           )}
         </div>
