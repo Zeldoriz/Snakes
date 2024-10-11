@@ -6,6 +6,7 @@ import styles from "./Board.module.css";
 import GameContext from "../../contexts/GameContext";
 import PauseOverlay from "../PauseOverlay/PauseOverlay";
 import StartOverlay from "../StartOverlay/StartOverlay";
+import GameoverOverlay from "./../GameoverOverlay/GameoverOverlay";
 
 const Board = () => {
   // useContext to access GameContext which stores global game values
@@ -26,6 +27,8 @@ const Board = () => {
     }
     return board;
   }, [boardSizeX, boardSizeY]);
+
+  const displayGameoverScore = useRef();
 
   //Default values for all variables
   const defaultValue = () => {
@@ -215,7 +218,7 @@ const Board = () => {
     return { x: tileX, y: tileY };
   };
 
-  //Board update function
+  //Main game runner / engine
   useEffect(() => {
     if (gameStatus === "running") {
       const interval = setInterval(() => {
@@ -250,7 +253,8 @@ const Board = () => {
 
         //Check if the snake has collided with itself
         if (isOverlapping(currentHeadTile.current.x, currentHeadTile.current.y, "snake")) {
-          alert("Gameover");
+          displayGameoverScore.current = gameScore;
+          restartGame();
           setGameStatus("gameover");
         }
 
@@ -299,6 +303,11 @@ const Board = () => {
   return (
     <>
       <PauseOverlay setGameStatus={setGameStatus} gameStatus={gameStatus} />
+      <GameoverOverlay
+        setGameStatus={setGameStatus}
+        gameStatus={gameStatus}
+        displayGameoverScore={displayGameoverScore.current}
+      />
       <div id={styles.boardContainer}>
         {gameStatus === "starting" ? (
           <StartOverlay setGameStatus={setGameStatus} />
@@ -306,7 +315,7 @@ const Board = () => {
           <div className={styles.board}>
             <div className={styles.menu}>
               <div className={styles.gameScore}>Score: {gameScore}</div>
-              <span>Click board to pause!</span>
+              <span>Click board to pause</span>
             </div>
             <div className={styles.tiles} onClick={handlePause}>
               {tiles}

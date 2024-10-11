@@ -10,7 +10,7 @@ const StartOverlay = ({ setGameStatus }) => {
   return (
     <>
       <div id={styles.startContainer} onClick={handleStart}>
-        <span>Click Anywhere to Start!</span>
+        <span>Click anywhere to start</span>
       </div>
     </>
   );

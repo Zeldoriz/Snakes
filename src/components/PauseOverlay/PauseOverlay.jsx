@@ -16,7 +16,7 @@ const PauseOverlay = ({ gameStatus, setGameStatus }) => {
       <div className={`${styles.overlayContainer} ${overlayDisplay}`} onClick={handleResume}>
         <div className={styles.pauseOverlay}>
           <span>Game Paused</span>
-          <span>Click anywhere to continue!</span>
+          <span>Click anywhere to continue</span>
         </div>
       </div>
     </>
