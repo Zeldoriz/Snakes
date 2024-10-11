@@ -54,12 +54,12 @@ const Board = () => {
   const [snakeLength, setSnakeLength] = useState(defaultValue().snakeLength);
   const currentDirection = useRef(defaultValue().currentDirection);
   const currentHeadTile = useRef(defaultValue().currentHeadTile);
-  const snakeTiles = useRef(defaultValue());
-  const snakeTail = useRef(defaultValue());
+  const snakeTiles = useRef(defaultValue().snakeTiles);
+  const snakeTail = useRef(defaultValue().snakeTail);
 
   //Food settings
-  const foodTile = useRef({ x: -1, y: -1 });
-  const [foodExists, setFoodExists] = useState(false);
+  const foodTile = useRef(defaultValue().foodTile);
+  const [foodExists, setFoodExists] = useState(defaultValue().foodExists);
 
   // Directional movement functions
   const move = () => {
