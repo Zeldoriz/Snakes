@@ -13,6 +13,12 @@
   grid-gap: 0.5em;
 }
 
+#board h1 {
+  color: white;
+  font-size: 3em;
+  margin: 1em;
+}
+
 .gameScore {
   color: white;
   font-size: 3em;
