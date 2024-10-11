@@ -10,16 +10,41 @@
   display: flex;
   flex-direction: column;
   gap: 1em;
+  transform: scale(0.75);
+}
+
+.menu {
+  display: flex;
+  justify-content: space-between;
+}
+
+.menu span {
+  align-self: flex-end;
+  color: rgba(245, 245, 245, 0.6);
+  font-size: 1.1em;
 }
 
 .tiles {
   display: grid;
   grid-template-columns: repeat(20, 1fr);
   grid-gap: 0.5em;
+  border: 1px solid rgba(245, 245, 245, 0.6);
+  border-radius: 5px;
+  padding: 0.5em;
 }
 
 .gameScore {
   color: white;
   font-size: 2em;
   z-index: 1;
+}
+
+#link {
+  color: whitesmoke;
+  align-self: flex-end;
+}
+
+#link > a {
+  color: #3cc4bf;
+  text-decoration: none;
 }

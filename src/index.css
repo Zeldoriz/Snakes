@@ -127,5 +127,6 @@ table {
 
 :root {
   --background-color: rgb(13, 17, 23);
-
+  --turquoise: #3cc4bf;
+  --yellow: #f2b147;
 }

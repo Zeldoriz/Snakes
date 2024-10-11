@@ -1,13 +1,12 @@
 .tile {
-  border: 1px solid white;
   padding: 1em;
   border-radius: 6px;
 }
 
 .active {
-  background-color: red;
+  background-color: var(--yellow);
 }
 
 .food {
-  background-color: green;
+  background-color: var(--turquoise);
 }

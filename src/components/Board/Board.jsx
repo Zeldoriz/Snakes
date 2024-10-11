@@ -68,17 +68,26 @@ const Board = () => {
 
   //Reverts all the game settings into its default values
   const restartGame = () => {
-    setTiles(boardInit);
-    gameSpeed.current = 100;
-    setGameStatus("running");
-    setActiveHeadTile({ x: 0, y: 0 });
-    setSnakeLength(1);
-    currentDirection.current = "right";
-    currentHeadTile.current = null;
-    snakeTiles.current = [];
-    snakeTail.current = [];
-    foodTile.current = { x: -1, y: -1 };
-    setFoodExists(false);
+    const defaults = defaultValue();
+
+    // Reset board settings
+    setTiles(defaults.tiles);
+    gameSpeed.current = defaults.gameSpeed;
+    setGameStatus(defaults.gameStatus);
+
+    // Reset snake settings
+    setActiveHeadTile(defaults.activeHeadTile);
+    setSnakeLength(defaults.snakeLength);
+    currentDirection.current = defaults.currentDirection;
+    currentHeadTile.current = defaults.currentHeadTile;
+    snakeTiles.current = defaults.snakeTiles;
+    snakeTail.current = defaults.snakeTail;
+
+    // Reset food settings
+    foodTile.current = defaults.foodTile;
+    setFoodExists(defaults.foodExists);
+
+    // Reset game score
     setGameScore(0);
   };
 
@@ -295,10 +304,19 @@ const Board = () => {
           <StartOverlay setGameStatus={setGameStatus} />
         ) : (
           <div className={styles.board}>
-            <div className={styles.gameScore}>Score: {gameScore}</div>
+            <div className={styles.menu}>
+              <div className={styles.gameScore}>Score: {gameScore}</div>
+              <span>Click board to pause!</span>
+            </div>
             <div className={styles.tiles} onClick={handlePause}>
               {tiles}
             </div>
+            <p id={styles.link}>
+              Created by{" "}
+              <a href="https://github.com/Zeldoriz" target="blank">
+                Andrew Tian
+              </a>
+            </p>
           </div>
         )}
       </div>
