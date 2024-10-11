@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
-import { useEffect, useState, useRef, useContext } from "react";
+import { useEffect, useState, useRef, useContext, useMemo } from "react";
 import Tile from "../Tile/Tile";
 import styles from "./Board.module.css";
 import GameContext from "../../contexts/GameContext";
@@ -11,16 +11,19 @@ const Board = () => {
   const { gameScore, setGameScore } = gameContext;
 
   //Board size settings
-  const boardSizeY = useRef(20),
-    boardSizeX = useRef(20);
+  const boardSizeY = 20,
+    boardSizeX = 20;
 
   //Initiallize board
-  const boardInit = [];
-  for (let y = 0; y < boardSizeY.current; y++) {
-    for (let x = 0; x < boardSizeX.current; x++) {
-      boardInit.push(<Tile key={`${x}-${y}`} x={x} y={y} isActive={false} isFood={false} />);
+  const boardInit = useMemo(() => {
+    let board = [];
+    for (let y = 0; y < boardSizeY; y++) {
+      for (let x = 0; x < boardSizeX; x++) {
+        board.push(<Tile key={`${x}-${y}`} x={x} y={y} isActive={false} isFood={false} />);
+      }
     }
-  }
+    return board;
+  }, [boardSizeX, boardSizeY]);
 
   //Default values for all variables
   const defaultValue = () => {
@@ -80,26 +83,26 @@ const Board = () => {
   // Directional movement functions
   const move = () => {
     const right = () => {
-      setActiveHeadTile({ x: (activeHeadTile.x + 1) % boardSizeX.current, y: activeHeadTile.y });
+      setActiveHeadTile({ x: (activeHeadTile.x + 1) % boardSizeX, y: activeHeadTile.y });
     };
 
     const left = () => {
       setActiveHeadTile(() => {
-        if (activeHeadTile.x <= 0) return { x: boardSizeX.current - 1, y: activeHeadTile.y };
-        return { x: (activeHeadTile.x - 1) % boardSizeX.current, y: activeHeadTile.y };
+        if (activeHeadTile.x <= 0) return { x: boardSizeX - 1, y: activeHeadTile.y };
+        return { x: (activeHeadTile.x - 1) % boardSizeX, y: activeHeadTile.y };
       });
     };
 
     const down = () => {
       setActiveHeadTile(() => {
-        setActiveHeadTile({ x: activeHeadTile.x, y: (activeHeadTile.y + 1) % boardSizeY.current });
+        setActiveHeadTile({ x: activeHeadTile.x, y: (activeHeadTile.y + 1) % boardSizeY });
       });
     };
 
     const up = () => {
       setActiveHeadTile(() => {
-        if (activeHeadTile.y <= 0) return { x: activeHeadTile.x, y: boardSizeY.current - 1 };
-        return { x: activeHeadTile.x, y: (activeHeadTile.y - 1) % boardSizeY.current };
+        if (activeHeadTile.y <= 0) return { x: activeHeadTile.x, y: boardSizeY - 1 };
+        return { x: activeHeadTile.x, y: (activeHeadTile.y - 1) % boardSizeY };
       });
     };
     return { right, left, down, up };
