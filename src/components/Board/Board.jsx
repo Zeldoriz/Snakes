@@ -5,6 +5,7 @@ import Tile from "../Tile/Tile";
 import styles from "./Board.module.css";
 import GameContext from "../../contexts/GameContext";
 import PauseOverlay from "../PauseOverlay/PauseOverlay";
+import StartOverlay from "../StartOverlay/StartOverlay";
 
 const Board = () => {
   // useContext to access GameContext which stores global game values
@@ -165,8 +166,8 @@ const Board = () => {
   const getRandomFoodTile = () => {
     let found = false;
     while (!found) {
-      let foodX = Math.floor(getRandomNumber(0, 10)),
-        foodY = Math.floor(getRandomNumber(0, 10));
+      let foodX = Math.floor(getRandomNumber(0, boardSizeX)),
+        foodY = Math.floor(getRandomNumber(0, boardSizeY));
       if (!isOverlapping(foodX, foodY)) {
         foodTile.current = { x: foodX, y: foodY };
         found = true;
@@ -289,15 +290,17 @@ const Board = () => {
   return (
     <>
       <PauseOverlay setGameStatus={setGameStatus} gameStatus={gameStatus} />
-      <div className={styles.gameScore}>Score: {gameScore}</div>
       <div id={styles.boardContainer}>
-        <div id={styles.board}>
-          {gameStatus === "starting" ? null : (
+        {gameStatus === "starting" ? (
+          <StartOverlay setGameStatus={setGameStatus} />
+        ) : (
+          <div className={styles.board}>
+            <div className={styles.gameScore}>Score: {gameScore}</div>
             <div className={styles.tiles} onClick={handlePause}>
               {tiles}
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </>
   );
