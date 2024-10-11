@@ -16,7 +16,9 @@ const GameoverOverlay = ({ gameStatus, setGameStatus, displayGameoverScore }) =>
       <div className={`${styles.overlayContainer} ${overlayDisplay}`} onClick={handleRestart}>
         <div className={styles.pauseOverlay}>
           <span>Game Over!</span>
-          <span>Your Final Score: {displayGameoverScore}</span>
+          <span>
+            Your Final Score: <span className={styles.displayScore}>{displayGameoverScore}</span>
+          </span>
           <span>Click anywhere to restart</span>
         </div>
       </div>
