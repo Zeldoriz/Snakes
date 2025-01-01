@@ -5,7 +5,7 @@
 
 ## Overview
 
-Snakes is a web-based implementation of the classic Snake game, built using React and Vite. In this game, players control a snake to consume food items, causing the snake to grow in length. The objective is to achieve the highest possible score without colliding with the walls or the snake's own body.
+Snakes is a web-based implementation of the classic Snake game, built using React and Vite. In this game, players control a snake to consume food items, causing the snake to grow in length. The objective is to achieve the highest possible score without colliding with the snake's own body. Note: Walls do not exist here...
 
 ## Features
 
